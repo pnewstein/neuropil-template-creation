@@ -13,7 +13,7 @@ import napari
 import nrrd
 import click
 
-BRP_LBLS = ["Brp"]
+BRP_LBLS = ["Brp", "Spots 1"]
 
 def get_data_frames_from_hf(dset: Group) -> dict[str, pd.DataFrame]:
     """
@@ -45,8 +45,11 @@ def main(paths):
         dset = ims_object.hf["Scene8/Content"]
         assert isinstance(dset, Group)
         dfs = get_data_frames_from_hf(dset)
+        print(list(dfs.keys()))
         brp_lbl = next(l for l in BRP_LBLS if l in dfs.keys())
-        dfs[brp_lbl].to_csv(folder_path / "puncta.csv")
+        puncta_df = dfs[brp_lbl]
+        print(puncta_df)
+        puncta_df.to_csv(folder_path / "puncta.csv")
         for i in range(data.shape[0]):
             img_3d = data[i, :, :, :].transpose([2, 1, 0])
             nrrd.write(
