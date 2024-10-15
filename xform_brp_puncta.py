@@ -26,14 +26,6 @@ def main():
         out_df.to_csv(path.parent / "reformated_puncta.csv")
 
 
-def load_into_napari():
-    import napari
-    import nrrd
 
-    viewer = napari.Viewer()
-    image, metadata = nrrd.read("template.nrrd")
-    viewer.add_image(image, scale=metadata["spacings"], name="template", colormap="red")
-    image, metadata = nrrd.read(directory / "neuropil_mask.nrrd")
-    viewer.add_image(image, scale=metadata["spacings"], name="moving", colormap="blue")
-    viewer.add_points(image_brp.loc[in_neuropil_mask, :], size=1, face_color="blue")
-    viewer.add_points(template_brp, size=1, face_color="magenta")
+if __name__ == "__main__":
+    main()
