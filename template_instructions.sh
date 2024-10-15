@@ -29,9 +29,10 @@ gunzip groupwise_mask/initial/groupwise.xforms.gz
 groupwise_affine --rmi -O groupwise_mask/affine -v --match-histograms \
 --dofs 6 --dofs 9 --zero-sum \
 --downsample-from 8 --downsample-to 1 --exploration 8 -a 0.5 \
---sampling-density 0.05 --force-background 0 \
+--sampling-density 0.05 --force-background 0 --output-average template.nrrd \
 groupwise_mask/initial/groupwise.xforms
 gunzip groupwise_mask/affine/groupwise.xforms.gz
+conda run -n template-env python post_proc_template.py
 
 
 ########################
