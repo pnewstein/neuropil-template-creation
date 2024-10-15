@@ -34,7 +34,7 @@ def make_neuropil_mask(
     blured = filters.gaussian(opened, sigma)
     threshold = filters.threshold_otsu(blured)
     neuropil_mask = blured > threshold
-    return neuropil_mask.astype(np.uint8) * 255
+    return neuropil_mask.astype(np.uint8)
 
 def process_one(path: str):
     img, metadata = nrrd.read(path)
