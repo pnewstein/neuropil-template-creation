@@ -1,15 +1,10 @@
 from pathlib import Path
 from subprocess import run
 
-import click
 
+template_path = Path("template.nrrd")
 
-@click.command(
-    help="register all images matching **/chan{chan_to_register}.nrrd to the template"
-)
-@click.argument("template-path", type=click.Path(exists=True))
-@click.argument("chan_to_register", type=int)
-def main(template_path: Path, chan_to_register: int):
+def main():
     moving_paths = list(Path().glob(f"**/neuropil_mask.nrrd"))
     for moving_path in moving_paths:
         affine_path = moving_path.parent / "affine.xform"
