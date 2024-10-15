@@ -43,4 +43,7 @@ conda run -n template-env python affine_register_all_images.py
 ##################
 # reformat all channels
 ####################
-conda run -n template-env python reformat_all_imgs.py groupwise_mask/affine/average.nii.gz
+# transform puncta into template coordinates
+conda run -n template-env python xform_brp_puncta.py
+# re-render all images into tempate coordinates
+conda run -n template-env python reformat_all_imgs.py
