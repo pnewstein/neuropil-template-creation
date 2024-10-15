@@ -1,5 +1,6 @@
 *.ims
 *.nrrd
 .DS_Store
+init.xform
 # add subdirectories
 */
