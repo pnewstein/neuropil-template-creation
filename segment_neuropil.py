@@ -10,15 +10,7 @@ import click
 import numpy as np
 from skimage import morphology, restoration, filters
 
-FLIP_XFORM = """! TYPEDSTREAM 2.4
 
-affine_xform {
-	xlate 0 0 0 
-	rotate 0 0 0 
-	scale 1 1 -1 
-	shear 0 0 0 
-	center 0 0 0 
-}"""
 
 
 def make_neuropil_mask(
@@ -66,23 +58,23 @@ def process_one(path: str):
     frac_after = 1 - (np.where(sum_over_z)[0][-1] / z_size)
     if frac_before > frac_after:
         # its inverted!
-        inverted_segmented = segmented[:, :, ::-1]
+        inverted_metadata = metadata.copy()
+        del inverted_metadata["spacings"]
+        inverted_scale = scale.copy()
+        inverted_scale[-1] = -inverted_scale[-1]
+        inverted_metadata["space directions"] = np.diag(inverted_scale)
         nrrd.write(
             str(Path(path).parent / "inverted_neuropil_mask.nrrd"),
-            inverted_segmented,
+            segmented,
             compression_level=1,
-            header={"spacings": scale},
+            header={"spacings": inverted_scale},
         )
-        (Path(path).parent / "init.xform").write_text(FLIP_XFORM)
     return 0
 
 
 @click.command()
 @click.argument("paths", nargs=-1, type=click.Path(exists=True))
 def main(paths):
-    for path in paths:
-        process_one(path)
-    quit()
     with ProcessPoolExecutor() as executor:
         map = executor.map(process_one, paths)
         assert all(m == 0 for m in map)
