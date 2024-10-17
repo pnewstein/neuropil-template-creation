@@ -26,6 +26,5 @@ def main():
         out_df.to_csv(path.parent / "reformated_puncta.csv")
 
 
-
 if __name__ == "__main__":
     main()
