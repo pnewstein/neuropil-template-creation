@@ -23,5 +23,6 @@ dependencies:
   - morphops 
   - matplotlib 
   - seaborn
+  - ipython
   - pip:
     - xform

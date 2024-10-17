@@ -49,12 +49,14 @@ conda run -n template-env python post_proc_template.py
 conda run -n template-env python affine_register_all_images.py
 
 ##################
-# reformat all channels
+# reformat into template coordinates
 ####################
 # transform puncta into template coordinates
 conda run -n template-env python xform_brp_puncta.py
 # re-render all images into template coordinates
 conda run -n template-env python reformat_all_imgs.py
 
-#################
-
+#######################
+# Define regions of VNC
+#######################
+conda run -n template-env ipython -i define_hb_postive_regions.py
