@@ -59,4 +59,14 @@ conda run -n template-env python reformat_all_imgs.py
 #######################
 # Define regions of VNC
 #######################
+# drag and drop all reformated_puncta from the hb experimetns here
 conda run -n template-env ipython -i define_hb_postive_regions.py
+# then run make-regions in the python interpereter:  make_regions(connectedness: float, fraction_in: float):
+    #make_regions defines a region what includes fraction_in of the points
+    #it adds a new layer to the napari viewer and saves a nrrd 
+
+    #increasing connectedness tends to connect blobs together. it is implemented
+        #as a sigma of a gausian blur in um
+    #fraction_in is the fraction of points from all images to include in the region
+# make_regions(connectedness= .8, fraction_in=.9)
+
