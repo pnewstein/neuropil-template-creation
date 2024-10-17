@@ -26,8 +26,14 @@ def main():
         neuropil_spots = pd.read_csv(path, index_col=0)
         original_spots_path = path.parent / "puncta.csv"
         original_spots = pd.read_csv(original_spots_path, index_col=0)
+        template_image, template_metadata = nrrd.read("template.nrrd")
+        pix_spots = (neuropil_spots / template_metadata["spacings"]).round().astype(int)
+        in_neuropil = template_image.astype(bool)[
+            pix_spots["PositionX"],
+            pix_spots["PositionY"],
+            pix_spots["PositionZ"],
+        ]
         hb_image, hb_metadata = nrrd.read("hb_puncta_mask.nrrd")
-        pix_spots = (neuropil_spots / hb_metadata["spacings"]).round().astype(int)
         in_hb_image = hb_image.astype(bool)[
             pix_spots["PositionX"],
             pix_spots["PositionY"],
@@ -35,7 +41,12 @@ def main():
         ]
         not_hb_image, not_hb_metadata = nrrd.read("hb_puncta_anti_mask.nrrd")
         assert all(
-            a == b for a, b in zip(not_hb_metadata["spacings"], hb_metadata["spacings"])
+            a == b == c
+            for a, b, c in zip(
+                not_hb_metadata["spacings"],
+                hb_metadata["spacings"],
+                template_metadata["spacings"],
+            )
         )
         in_not_hb_image = not_hb_image.astype(bool)[
             pix_spots["PositionX"],
@@ -46,7 +57,7 @@ def main():
             pd.Series(
                 {
                     "total": len(original_spots),
-                    "in neuropil": len(neuropil_spots),
+                    "in neuropil": in_neuropil.sum(),
                     "in hb-puncta zone": in_hb_image.sum(),
                     "in anti-hb-puncta zone": in_not_hb_image.sum(),
                 },
@@ -55,6 +66,7 @@ def main():
         )
     df = pd.DataFrame(serieses)
     df.to_csv("quantification.csv")
+
 
 if __name__ == "__main__":
     main()

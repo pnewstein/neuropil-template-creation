@@ -60,7 +60,8 @@ conda run -n template-env python reformat_all_imgs.py
 # Define regions of VNC
 #######################
 # drag and drop all reformated_puncta from the hb experimetns here
-conda run -n template-env ipython -i define_hb_postive_regions.py
+# NOTE: this step requires a gui. 
+conda run -n template-env ipython -i define_hb_postive_regions.py **/reformated_puncta.csv
 # then run make-regions in the python interpereter:  make_regions(connectedness: float, fraction_in: float):
     #make_regions defines a region what includes fraction_in of the points
     #it adds a new layer to the napari viewer and saves a nrrd 
@@ -70,3 +71,8 @@ conda run -n template-env ipython -i define_hb_postive_regions.py
     #fraction_in is the fraction of points from all images to include in the region
 # make_regions(connectedness= .8, fraction_in=.9)
 
+#######################
+# Quantify all data
+#######################
+# Runs on all of the reformated_puncta files creates quantification.csv
+conda run -n template-env python make_spreadsheet.py
