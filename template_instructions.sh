@@ -1,6 +1,6 @@
-#####################
+##############
 # INSTALLATION
-#####################
+##############
 
 # - Download CMTK from https://www.nitrc.org/projects/cmtk
 # - Add binary directory to path
@@ -24,9 +24,9 @@ conda run -n template-env python read_imaris.py *.ims
 # generates a init.xform which flips the z axis.
 conda run -n template-env python segment_neuropil.py **/chan0.nrrd
 
-####################
+#################
 # Make a template
-####################
+#################
 # Initialize three-image groupwise alignment using centers of mass (drag neuropil_mask from best images here)
 groupwise_init -O groupwise_mask/initial -v --align-centers-of-mass  **/neuropil_mask.nrrd
 gunzip -f groupwise_mask/initial/groupwise.xforms.gz
@@ -43,14 +43,14 @@ gunzip -f groupwise_mask/affine/groupwise.xforms.gz
 conda run -n template-env python post_proc_template.py
 
 
-########################
+#####################################
 # register all images to the template
-########################
+#####################################
 conda run -n template-env python affine_register_all_images.py
 
-##################
+####################################
 # reformat into template coordinates
-####################
+####################################
 # transform puncta into template coordinates
 conda run -n template-env python xform_brp_puncta.py
 # re-render all images into template coordinates
@@ -71,8 +71,8 @@ conda run -n template-env ipython -i define_hb_postive_regions.py **/reformated_
     #fraction_in is the fraction of points from all images to include in the region
 # make_regions(connectedness= .8, fraction_in=.9)
 
-#######################
+###################
 # Quantify all data
-#######################
+###################
 # Runs on all of the reformated_puncta files creates quantification.csv
 conda run -n template-env python make_spreadsheet.py
