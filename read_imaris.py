@@ -40,7 +40,7 @@ def main(paths):
         assert isinstance(ims_object, ims_reader)
         data = ims_object[0, :, :, :, :]
         scale = ims_object.resolution
-        (folder_path / "scale.json").write_text(json.dumps(scale))
+        (folder_path / "scale.json").write_text(json.dumps(scale[::-1]))
         assert ims_object.hf is not None
         dset = ims_object.hf["Scene8/Content"]
         assert isinstance(dset, Group)
