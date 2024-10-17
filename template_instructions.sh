@@ -1,5 +1,5 @@
 #####################
-# INSTALATION
+# INSTALLATION
 #####################
 
 # - Download CMTK from https://www.nitrc.org/projects/cmtk
@@ -10,7 +10,7 @@
 conda env create -yf environment.yml
 
 ###############################
-# preprocess all of the images
+# pre-process all of the images
 ###############################
 # move all 
 # Convert images to nrrds using a python script 
@@ -53,5 +53,8 @@ conda run -n template-env python affine_register_all_images.py
 ####################
 # transform puncta into template coordinates
 conda run -n template-env python xform_brp_puncta.py
-# re-render all images into tempate coordinates
+# re-render all images into template coordinates
 conda run -n template-env python reformat_all_imgs.py
+
+#################
+
