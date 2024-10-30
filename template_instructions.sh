@@ -12,8 +12,8 @@ conda env create -yf environment.yml
 ###############################
 # pre-process all of the images
 ###############################
-# move all 
-# Convert images to nrrds using a python script 
+# move all
+# Convert images to nrrds using a python script
 conda run -n template-env python read_imaris.py *.ims
 # Segment out the neuropil channel (if not all neuropil channels are the same.
 # Just drag and drop them all in)
@@ -60,11 +60,11 @@ conda run -n template-env python reformat_all_imgs.py
 # Define regions of VNC
 #######################
 # drag and drop all reformated_puncta from the hb experimetns here
-# NOTE: this step requires a gui. 
+# NOTE: this step requires a gui.
 conda run -n template-env ipython -i define_hb_postive_regions.py **/reformated_puncta.csv
 # then run make-regions in the python interpereter:  make_regions(connectedness: float, fraction_in: float):
     #make_regions defines a region what includes fraction_in of the points
-    #it adds a new layer to the napari viewer and saves a nrrd 
+    #it adds a new layer to the napari viewer and saves a nrrd
 
     #increasing connectedness tends to connect blobs together. it is implemented
         #as a sigma of a gausian blur in um
