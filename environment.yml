@@ -1,0 +1,28 @@
+name: template-env
+channels:
+  - conda-forge
+dependencies:
+  - pynrrd
+  - tifffile
+  - numpy
+  - click
+  - pynrrd
+  - scikit-image
+  - numpy
+  - imaris-ims-file-reader
+  - pandas
+  - h5py
+  - napari
+  - pyqt
+  - scipy
+  - fuzzywuzzy
+  - pyparsing 
+  - fonttools 
+  - cycler 
+  - contourpy 
+  - morphops 
+  - matplotlib 
+  - seaborn
+  - ipython
+  - pip:
+    - xform
