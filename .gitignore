@@ -1,0 +1,6 @@
+*.ims
+*.nrrd
+*.csv
+.DS_Store
+# add subdirectories
+*/
