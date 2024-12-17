@@ -1,3 +1,6 @@
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.14510755.svg)](https://doi.org/10.5281/zenodo.14510755)
+
+
 # Neuropil template creation
 
 This code contains many python utilities and a shell script to register images
