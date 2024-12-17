@@ -40,6 +40,6 @@ regions where there are few hb+ puncta, but many puncta in control. See the
 documentation for `define_hb_postive_regions.make_regions` and
 `define_hb_postive_regions.split_regions` for more information.
 
-# Quantify all data
+## Quantify all data
 create a spreadsheet `quantification.csv` that quantifies each hemisegment. see
 documentation for `make_spreadsheet.main` for description of columns
