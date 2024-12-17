@@ -14,15 +14,16 @@ import nrrd
 import click
 import numpy as np
 import napari
+from import_imaris_spots import in_mask
 
 # directory = Path("Control-00--L0-230913_NB5-2;UAS-FLP,Brp-V5_488V5_555CadN_647FasII_647Eve_slide1L_1_A1 2")
-
 HB_PUNCTA_COLOR = "#00FFFF"
 ANTI_HB_PUNCTA_COLOR = "#FF00FF"
 NUMBERED_VOLUME_COLORS  = [
-    '#000000', '#000000', '#000000', '#000000'
+    '#00FFFF', '#00FFFF', '#00FFFF', '#00FFFF'
 ]
-
+NEITHER_PUNCTA_COLOR = "#FF00FF"
+COLOR_CODE_PUNCTA = True
 N_EXAMPLE_IMAGES_TO_SHOW = 1
 ONLY_LEFT = True
 
@@ -43,17 +44,14 @@ def main(paths: list[click.Path]):
         paths = list(chain.from_iterable(json.loads(Path("region_defining_files.json").read_text()).values()))
         for path in paths.copy():
             paths.append(str(Path(path).parent / "fliped_puncta.csv"))
-    #add all points
-    viewer = napari.Viewer()
-    for path in paths:
-        spots = pd.read_csv(str(path), index_col=0)
-        viewer.add_points(spots, size=.2, name=path)
+
     # add general purpose masks
     left_neuropil, _ = nrrd.read("left_neuropil.nrrd")
     if not ONLY_LEFT:
         left_neuropil[:] = True
     hb_image, metadata = nrrd.read("hb_puncta_mask.nrrd")
     hb_image *= left_neuropil
+    viewer = napari.Viewer()
     viewer.add_image(hb_image, rendering="iso", colormap=get_colormap(HB_PUNCTA_COLOR), blending="translucent", name="hb region", scale=metadata["spacings"])
     not_hb_image, _ = nrrd.read("hb_puncta_anti_mask.nrrd")
     not_hb_image *= left_neuropil
@@ -67,6 +65,21 @@ def main(paths: list[click.Path]):
         mask, _ = nrrd.read(str(mask_path))
         viewer.add_image(mask*255, rendering="iso", colormap=get_colormap(NUMBERED_VOLUME_COLORS[i]), blending="translucent", name=mask_path.name, scale=metadata["spacings"])
         i += 1
+    # add all points
+    for path in paths:
+        spots = pd.read_csv(str(path), index_col=0)
+        if COLOR_CODE_PUNCTA:
+            pix_spots = np.round(spots / metadata["spacings"]).astype(int)
+            in_left = in_mask(pix_spots, left_neuropil.astype(bool))
+            in_hb_mask = in_mask(pix_spots, hb_image.astype(bool))
+            not_hb_mask = in_mask(pix_spots, not_hb_image.astype(bool)) & (~in_hb_mask)
+            neither = ~(in_hb_mask | not_hb_mask)
+            viewer.add_points(spots.loc[in_hb_mask & in_left], size=.2, blending="translucent", edge_color="#00000000", face_color=HB_PUNCTA_COLOR, name="hb")
+            viewer.add_points(spots.loc[not_hb_mask & in_left], size=.2, blending="translucent", edge_color="#00000000", face_color=ANTI_HB_PUNCTA_COLOR, name="anti-hb")
+            viewer.add_points(spots.loc[neither & in_left], size=.2, blending="translucent", edge_color="#00000000", face_color=NEITHER_PUNCTA_COLOR, name="neither")
+
+        else:
+            viewer.add_points(spots, size=.2, name=path)
     # image specific images
     visited_directories = []
     for i, path in enumerate(paths):
@@ -87,6 +100,10 @@ def main(paths: list[click.Path]):
         viewer.add_image(reformat_voxel, scale=metadata["spacings"], name="1", blending="additive", colormap="magenta")
         reformat_voxel, _ = nrrd.read(str(directory / "chan0.reformat.nrrd"))
         viewer.add_image(reformat_voxel, scale=metadata["spacings"], name="0", blending="additive", colormap="cyan")
+    viewer.dims.ndisplay = 3
+    viewer.camera.center = (27.85042890855606, 6.078841557537622, 19.44701289317065)
+    viewer.camera.zoom = 25.8
+    viewer.camera.angles = (-90, 0, 180)
     napari.run()
 
 

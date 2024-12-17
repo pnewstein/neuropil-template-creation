@@ -64,8 +64,6 @@ def init():
         increasing connectedness tends to connect blobs together. it is implemented
             as a sigma of a gausian blur in um
         fraction_in is the fraction of points from all images to include in the region
-        hb_avoid_coef is what the blured hb+ puncta image is multiplied by
-        before subtracting from ctrl puncta to define the anti-hb-puncta
         """
         # get blured which corrisponds to closeness to a point
         sigma = tuple(connectedness / s for s in working_scale)
@@ -86,9 +84,21 @@ def init():
             header={"spacings": working_scale},
         )
         ctrl_blured = get_blured(sigma, "ctrl")
-        ctrl_not_hb = (ctrl_blured / len(paths_dict["ctrl"])) - (
-            hb_avoid_coef * blured / len(paths_dict["hb_only"])
+        norm_ctrl_blured = ctrl_blured / len(paths_dict["ctrl"])
+        nrrd.write(
+            str("ctrl_blured.nrrd"),
+            norm_ctrl_blured,
+            compression_level=4,
+            header={"spacings": working_scale},
         )
+        norm_hb_blured = hb_avoid_coef * blured / len(paths_dict["hb_only"])
+        nrrd.write(
+            str("hb_blured.nrrd"),
+            norm_hb_blured,
+            compression_level=4,
+            header={"spacings": working_scale},
+        )
+        ctrl_not_hb = (norm_ctrl_blured) - (norm_hb_blured)
         # get equal volume min
         fraction_in_mask = (high_mask[neuropil_mask]).astype(bool).mean()
         ctrl_not_hb_in_neuropil_brightnesses = ctrl_not_hb[neuropil_mask]
